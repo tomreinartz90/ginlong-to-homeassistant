@@ -37,7 +37,7 @@ export class MqttApi {
   }
 
   static createSensor( client: MqttClient, serialNumber: string, key: string, name: string, uom: string ) {
-    let type = "None";
+    let type = "";
     switch ( uom.toLowerCase() ) {
       case 'a':
         type = DeviceClassEnum.current;
@@ -58,13 +58,16 @@ export class MqttApi {
 
     const topic = `${MqttApi.getBaseTopic( serialNumber, key )}/config`;
     const message = {
-      "manufacturer": "Ginlong",
       "device_class": type,
-      "name": `Ginlong ${name}`,
       "expire_after": 60 * 15, // expect an update at least every 15 minutes
-      "uniq_id": `${serialNumber}_${key}`,
-      "identifiers": `${serialNumber}_${key}`,
-      "device": { "identifiers": [ `ginlong_${serialNumber}_${key}` ] },
+      "uniq_id": `ginlong_${serialNumber}_${key}`,
+      "name": `Ginlong ${name}`,
+      "device": {
+        "name": `Ginlong_${serialNumber}`,
+        "identifiers":
+          [ `ginlong_${serialNumber}` ],
+        "manufacturer": "Ginlong",
+      },
       "unit_of_measurement": uom,
       "state_topic": `${MqttApi.getBaseTopic( serialNumber, key )}/state`,
     };
