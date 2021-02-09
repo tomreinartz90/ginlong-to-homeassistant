@@ -3,7 +3,7 @@ import { MqttApi } from "./api/mqtt.api";
 import { CONFIG } from "./config";
 
 const mqttClient = MqttApi.createClient( CONFIG.mqtt_host, CONFIG.mqtt_config );
-
+let dynamicSensorKeys: Array<string> = [];
 const updateHASS = ( initial: boolean = false ) => {
   try {
 
@@ -15,16 +15,27 @@ const updateHASS = ( initial: boolean = false ) => {
         const dateDiff = new Date().getTime() - lastUpdated.getTime();
         const online = dateDiff < (1000 * 60 * 15);
         if ( initial ) {
+          // default static sensors
+          MqttApi.createSensor( mqttClient, serialNumber, 'online', `Inverter ${serialNumber} online:`, '' );
+          MqttApi.createSensor( mqttClient, serialNumber, 'last_online', `Last seen online:`, 'timestamp' );
+
+          // dynamic sensors
           interterData.forEach( item => {
             MqttApi.createSensor( mqttClient, serialNumber, item.key, item.name, item.unit );
           } );
         }
 
+        MqttApi.updateSensors( mqttClient, serialNumber, [
+          { key: 'online', value: online ? 'On' : 'Off' },
+          { key: 'last_online', value: lastUpdated.toISOString() }
+        ] );
+
         // only update if device was updated last 15 minutes;
         if ( online ) {
           MqttApi.updateSensors( mqttClient, serialNumber, interterData.map( item => ({ key: item.key, value: item.value }) ) );
+          dynamicSensorKeys = interterData.map( item => item.key );
         } else {
-          console.log( "Inverter is offline" );
+          MqttApi.updateSensors( mqttClient, serialNumber, dynamicSensorKeys.map( key => ({ key, value: '0' }) ) );
         }
 
         console.log( "SN:", serialNumber );

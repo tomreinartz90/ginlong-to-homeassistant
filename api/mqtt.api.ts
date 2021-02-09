@@ -37,9 +37,6 @@ export class MqttApi {
   }
 
   static createSensor( client: MqttClient, serialNumber: string, key: string, name: string, uom: string ) {
-    // topic
-    // homeassistant/switch/F90FB3_RL_1/config
-    // homeassistant/binary_sensor/garden/config" -m '{"name": "garden", "device_class": "motion", "state_topic": "homeassistant/binary_sensor/garden/state"}'
     let type = "None";
     switch ( uom.toLowerCase() ) {
       case 'a':
@@ -68,18 +65,15 @@ export class MqttApi {
       "device": { "identifiers": [ `ginlong_${serialNumber}_${key}` ] },
       "unit_of_measurement": uom,
       "state_topic": `${MqttApi.getBaseTopic( serialNumber, key )}/state`,
-//      "value_template": `{{ value_json.${key}}`,
     };
 
     console.log( topic, message );
-    client.publish( topic, JSON.stringify( message ), {}, ( err ) => console.log( 'err', err ) );
+    client.publish( topic, JSON.stringify( message ), {}, ( err ) => err ? console.log( 'err', err ) : void );
   }
 
   static updateSensors( client: MqttClient, serialNumber: string, values: Array<{ key: string, value: string }> ) {
-//    const topic = `${MqttApi.getBaseTopic( serialNumber )}/state`;
-//    const message = values.reduce( ( acc, curr ) => ({ ...acc, [ curr.key ]: curr.value }), {} );
     values.forEach( item => {
-      client.publish( `${MqttApi.getBaseTopic( serialNumber, item.key )}/state`, item.value, {}, ( err ) => console.log( 'err', err ) );
+      client.publish( `${MqttApi.getBaseTopic( serialNumber, item.key )}/state`, item.value, {}, ( err ) => err ? console.log( 'err', err ) : void );
       console.log( `${MqttApi.getBaseTopic( serialNumber, item.key )}/state`, item.value );
     } );
 
