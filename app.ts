@@ -33,13 +33,6 @@ const updateHASS = ( initial: boolean = false ) => {
         if ( online ) {
           // update with current value
           MqttApi.updateSensors( mqttClient, serialNumber, interterData.map( item => ({ key: item.key, value: item.value }) ) );
-        } else {
-          // update with 0 values
-          MqttApi.updateSensors( mqttClient, serialNumber,
-            interterData
-              .filter( item => !item.name.includes( 'Active' ) )
-              .map( item => ({ key: item.key, value: '0' }) )
-          );
         }
 
         console.log( "SN:", serialNumber );

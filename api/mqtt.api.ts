@@ -61,6 +61,7 @@ export class MqttApi {
       "manufacturer": "ginlon",
       "device_class": type,
       "name": name,
+      "expire_after": 60 * 15, // expect an update at least every 15 minutes
       "uniq_id": `${serialNumber}_${key}`,
       "device": { "identifiers": [ `ginlong_${serialNumber}_${key}` ] },
       "unit_of_measurement": uom,
