@@ -68,12 +68,12 @@ export class MqttApi {
     };
 
     console.log( topic, message );
-    client.publish( topic, JSON.stringify( message ), {}, ( err ) => err ? console.log( 'err', err ) : void );
+    client.publish( topic, JSON.stringify( message ), {}, ( err ) => err ? console.log( 'err', err ) : '' );
   }
 
   static updateSensors( client: MqttClient, serialNumber: string, values: Array<{ key: string, value: string }> ) {
     values.forEach( item => {
-      client.publish( `${MqttApi.getBaseTopic( serialNumber, item.key )}/state`, item.value, {}, ( err ) => err ? console.log( 'err', err ) : void );
+      client.publish( `${MqttApi.getBaseTopic( serialNumber, item.key )}/state`, item.value, {}, ( err ) => err ? console.log( 'err', err ) : '' );
       console.log( `${MqttApi.getBaseTopic( serialNumber, item.key )}/state`, item.value );
     } );
 

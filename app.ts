@@ -3,7 +3,6 @@ import { MqttApi } from "./api/mqtt.api";
 import { CONFIG } from "./config";
 
 const mqttClient = MqttApi.createClient( CONFIG.mqtt_host, CONFIG.mqtt_config );
-let dynamicSensorKeys: Array<string> = [];
 const updateHASS = ( initial: boolean = false ) => {
   try {
 
@@ -32,10 +31,15 @@ const updateHASS = ( initial: boolean = false ) => {
 
         // only update if device was updated last 15 minutes;
         if ( online ) {
+          // update with current value
           MqttApi.updateSensors( mqttClient, serialNumber, interterData.map( item => ({ key: item.key, value: item.value }) ) );
-          dynamicSensorKeys = interterData.map( item => item.key );
         } else {
-          MqttApi.updateSensors( mqttClient, serialNumber, dynamicSensorKeys.map( key => ({ key, value: '0' }) ) );
+          // update with 0 values
+          MqttApi.updateSensors( mqttClient, serialNumber,
+            interterData
+              .filter( item => !item.name.includes( 'Active' ) )
+              .map( item => ({ key: item.key, value: '0' }) )
+          );
         }
 
         console.log( "SN:", serialNumber );
