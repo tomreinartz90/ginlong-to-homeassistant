@@ -54,10 +54,10 @@ const updateHASS = ( initial: boolean = false ) => {
 mqttClient.on( 'connect', () => {
   console.log( mqttClient.connected );
 
-// periodic update every 5 minutes;
+// periodic update every 1 minutes;
   setInterval( () => {
     updateHASS();
-  }, 1000 * 60 * 5 );
+  }, 1000 * 60 );
 
 // initial update;
   updateHASS( true );
