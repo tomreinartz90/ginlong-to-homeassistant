@@ -58,11 +58,12 @@ export class MqttApi {
 
     const topic = `${MqttApi.getBaseTopic( serialNumber, key )}/config`;
     const message = {
-      "manufacturer": "ginlon",
+      "manufacturer": "Ginlong",
       "device_class": type,
-      "name": name,
+      "name": `Ginlong ${name}`,
       "expire_after": 60 * 15, // expect an update at least every 15 minutes
       "uniq_id": `${serialNumber}_${key}`,
+      "identifiers": `${serialNumber}_${key}`,
       "device": { "identifiers": [ `ginlong_${serialNumber}_${key}` ] },
       "unit_of_measurement": uom,
       "state_topic": `${MqttApi.getBaseTopic( serialNumber, key )}/state`,
