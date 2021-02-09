@@ -37,12 +37,13 @@ export class MqttApi {
   }
 
   static createSensor( client: MqttClient, serialNumber: string, key: string, name: string, uom: string ) {
-    let type = "";
-    switch ( uom.toLowerCase() ) {
+    let type = null;
+    switch ( (uom || "").toLowerCase() ) {
       case 'a':
         type = DeviceClassEnum.current;
         break;
       case 'v':
+      case 'VA':
         type = DeviceClassEnum.voltage;
         break;
       case 'w':
@@ -54,11 +55,11 @@ export class MqttApi {
       case '℃':
         type = DeviceClassEnum.temperature;
         break;
+      default:
     }
 
     const topic = `${MqttApi.getBaseTopic( serialNumber, key )}/config`;
-    const message = {
-      "device_class": type,
+    const message: any = {
       "expire_after": 60 * 15, // expect an update at least every 15 minutes
       "uniq_id": `ginlong_${serialNumber}_${key}`,
       "name": `Ginlong ${name}`,
@@ -71,6 +72,10 @@ export class MqttApi {
       "unit_of_measurement": uom,
       "state_topic": `${MqttApi.getBaseTopic( serialNumber, key )}/state`,
     };
+
+    if ( type ) {
+      message[ 'device_class' ] = type;
+    }
 
     console.log( topic, message );
     client.publish( topic, JSON.stringify( message ), {}, ( err ) => err ? console.log( 'err', err ) : '' );

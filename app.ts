@@ -8,7 +8,11 @@ const updateHASS = ( initial: boolean = false ) => {
 
     GinlonApi.authenticate( CONFIG.username, CONFIG.password ).then( ( cookie: string | Array<string> ) => {
       GinlonApi.getInverterDetails( cookie, CONFIG.plantId ).then( details => {
-        const interterData: Array<{ name: string, value: string, unit: string, key: string }> = JSON.parse( details.result.deviceWapper.paramDaySelectors );
+        const interterData: Array<{ name: string, value: string, unit: string, key: string }> = [
+          ...details.result.deviceWapper.realTimeDataElect,
+          ...details.result.deviceWapper.realTimeDataImp,
+          ...details.result.deviceWapper.realTimeDataOther,
+        ];
         const serialNumber = details.result.deviceWapper.sn;
         const lastUpdated = new Date( details.result.deviceWapper.updateDate );
         const dateDiff = new Date().getTime() - lastUpdated.getTime();
