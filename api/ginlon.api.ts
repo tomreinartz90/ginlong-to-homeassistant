@@ -18,7 +18,7 @@ export class GinlonApi {
           }
         },
         ( error, response, body ) => {
-          const result: any = body ? JSON.parse( body ) : {};
+          const result: any = body && body.charAt(0) === "{" ? JSON.parse( body ) : {};
           const cookie = response ? (response.headers[ 'Set-Cookie' ] || response.headers[ 'set-cookie' ] ) : null;
           if ( result.state === 5 && cookie ) {
             return resolve( cookie );
@@ -44,7 +44,7 @@ export class GinlonApi {
           }
         },
         ( error, response, body ) => {
-          const result: any = JSON.parse( body );
+          const result: any = body && body.charAt(0) === "{" ? JSON.parse( body ) : {};
           if ( result ) {
             return resolve( result );
           }
