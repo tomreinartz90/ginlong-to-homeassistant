@@ -32,11 +32,8 @@ const updateHASS = ( initial: boolean = false ) => {
           { key: 'last_online', value: lastUpdated.toISOString() }
         ] );
 
-        // only update if device was updated last 15 minutes;
-        if ( online ) {
-          // update with current value
-          MqttApi.updateSensors( mqttClient, serialNumber, interterData.map( item => ({ key: item.key, value: item.value }) ) );
-        }
+        // update with current value
+        MqttApi.updateSensors( mqttClient, serialNumber, interterData.map( item => ({ key: item.key, value: item.value }) ) );
 
         console.log( "SN:", serialNumber );
         console.log( "lastUpdated:", lastUpdated );
