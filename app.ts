@@ -17,16 +17,15 @@ const updateHASS = ( initial: boolean = false ) => {
         const lastUpdated = new Date( details.result.deviceWapper.updateDate );
         const dateDiff = new Date().getTime() - lastUpdated.getTime();
         const online = dateDiff < (1000 * 60 * 15);
-        if ( initial ) {
-          // default static sensors
-          MqttApi.createSensor( mqttClient, serialNumber, 'online', `Inverter ${serialNumber} online:`, '' );
-          MqttApi.createSensor( mqttClient, serialNumber, 'last_online', `Last seen online:`, 'timestamp' );
 
-          // dynamic sensors
-          interterData.forEach( item => {
-            MqttApi.createSensor( mqttClient, serialNumber, item.key, item.name, item.unit );
-          } );
-        }
+        // default static sensors
+        MqttApi.createSensor( mqttClient, serialNumber, 'online', `Inverter ${serialNumber} online:`, '' );
+        MqttApi.createSensor( mqttClient, serialNumber, 'last_online', `Last seen online:`, 'timestamp' );
+
+        // dynamic sensors
+        interterData.forEach( item => {
+          MqttApi.createSensor( mqttClient, serialNumber, item.key, item.name, item.unit );
+        } );
 
         MqttApi.updateSensors( mqttClient, serialNumber, [
           { key: 'online', value: online ? 'On' : 'Off' },
