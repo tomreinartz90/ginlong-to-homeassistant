@@ -77,6 +77,11 @@ export class MqttApi {
       message[ 'device_class' ] = type;
     }
 
+    if ( type === DeviceClassEnum.power
+      || type === DeviceClassEnum.energy ) {
+      message[ 'state_class' ] = 'measurement';
+    }
+
     console.log( topic, message );
     client.publish( topic, JSON.stringify( message ), {}, ( err ) => err ? console.log( 'err', err ) : '' );
   }
