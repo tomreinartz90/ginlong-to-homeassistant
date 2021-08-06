@@ -79,12 +79,15 @@ export class MqttApi {
 
     if ( type === DeviceClassEnum.power
       || type === DeviceClassEnum.energy ) {
+      message[ "last_reset_topic" ] = `${MqttApi.getBaseTopic( serialNumber, key )}/last_reset`;
       message[ 'state_class' ] = 'measurement';
-      message[ 'last_reset' ] = '1970-01-01T00:00:00+00:00';
     }
 
     console.log( topic, message );
     client.publish( topic, JSON.stringify( message ), {}, ( err ) => err ? console.log( 'err', err ) : '' );
+    if (message.last_reset_topic) {
+      client.publish(`${MqttApi.getBaseTopic( serialNumber, key )}/state`, 0, {}, ( err ) => err ? console.log( 'err', err ) : '' );
+    }
   }
 
   static updateSensors( client: MqttClient, serialNumber: string, values: Array<{ key: string, value: string }> ) {
