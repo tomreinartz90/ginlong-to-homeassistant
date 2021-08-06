@@ -86,7 +86,7 @@ export class MqttApi {
     console.log( topic, message );
     client.publish( topic, JSON.stringify( message ), {}, ( err ) => err ? console.log( 'err', err ) : '' );
     if (message.last_reset_topic) {
-      client.publish(`${MqttApi.getBaseTopic( serialNumber, key )}/state`, '0', {}, ( err ) => err ? console.log( 'err', err ) : '' );
+      client.publish(`${MqttApi.getBaseTopic( serialNumber, key )}/last_reset`, '0', {}, ( err ) => err ? console.log( 'err', err ) : '' );
     }
   }
 
