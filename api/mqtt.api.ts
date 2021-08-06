@@ -80,7 +80,7 @@ export class MqttApi {
     if ( type === DeviceClassEnum.power
       || type === DeviceClassEnum.energy ) {
       message[ 'state_class' ] = 'measurement';
-      message[ 'last_reset' ] = 0;
+      message[ 'last_reset' ] = '1970-01-01T00:00:00+00:00';
     }
 
     console.log( topic, message );
