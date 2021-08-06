@@ -90,7 +90,7 @@ export class MqttApi {
   static updateSensors( client: MqttClient, serialNumber: string, values: Array<{ key: string, value: string }> ) {
     values.forEach( item => {
       client.publish( `${MqttApi.getBaseTopic( serialNumber, item.key )}/state`, item.value, {}, ( err ) => err ? console.log( 'err', err ) : '' );
-      client.publish(`${MqttApi.getBaseTopic( serialNumber, item.key )}/last_reset`, '0', {}, ( err ) => err ? console.log( 'err', err ) : '' );
+      client.publish(`${MqttApi.getBaseTopic( serialNumber, item.key )}/last_reset`, '1970-01-01T00:00:00+00:00', {}, ( err ) => err ? console.log( 'err', err ) : '' );
 
       console.log( `${MqttApi.getBaseTopic( serialNumber, item.key )}/state`, item.value );
     } );
